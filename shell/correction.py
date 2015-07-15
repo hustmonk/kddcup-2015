@@ -82,7 +82,7 @@ class Correction:
             _y = self.label.get(_id)
             _username, _course_id = self.enrollment.enrollment_info.get(_id)
             days = self.lastdayinfo.get_days(_id)
-            end = self.cdate.get_end(_course_id)
+            end = self.cdate.get_course_end(_course_id)
             if self.debug:
                 print "_id,_y,days,end"
                 print _id,_y,days,end
