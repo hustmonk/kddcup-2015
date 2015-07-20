@@ -7,28 +7,17 @@
 
 __revision__ = '0.1'
 
-import sys
-from log import *
-from enrollment import *
-from Object import *
-from label import *
-from courseStatisticTime import *
-from common import *
-from highuser import *
-import math
-from module import *
-from transfer import *
-from lastday import *
-from commonfeature import *
 
-class WholeSiteFeature:
-    wholesitefeaturefilename = "_feature/whole.info.model"
+from logInfoFeatureExtractor import *
+
+class WholeWebsiteFeature:
+    whole_website_feature_filename = "_feature/whole.info.model"
     def build(self):
-        print "start build WholeSiteFeature..."
+        print "start build WholeWebsiteFeature ..."
         enrollment = Enrollment("../data/merge/enrollment.csv")
         log = LogInfo("../data/merge/log.csv")
-        commonfeature = CommonFeature()
-        coursetimeinfo = CourseStatiticTimeInfo()
+        log_info_feature_extractor = LogInfoFeatureExtractor()
+        coursetimeinfo = CourseStatisticTimeInfo()
         coursetimeinfo.load();
 
         ccc = 0
@@ -43,19 +32,21 @@ class WholeSiteFeature:
                 infos = infos + log.enrollment_loginfo.get(id, [])
                 username, course_id = enrollment.enrollment_info.get(id)
                 course_id_vec[coursetimeinfo.get_course_id(course_id)] = 1
-            f = commonfeature.get_features_no_courseid(infos)
+            f = log_info_feature_extractor.get_features_no_courseid(infos)
             fs[uid] = f + "," + ",".join(["%s" % k for k in course_id_vec])
-        writepickle(WholeSiteFeature.wholesitefeaturefilename, fs)
-        print "build WholeSiteFeature over!"
+        writepickle(WholeWebsiteFeature.whole_website_feature_filename, fs)
+        print "build WholeWebsiteFeature over!"
 
     def load(self):
-        self.fs = loadpickle(WholeSiteFeature.wholesitefeaturefilename)
+        self.fs = loadpickle(WholeWebsiteFeature.whole_website_feature_filename)
+        self.enrollment = Enrollment("../data/merge/enrollment.csv")
 
     def get_features(self, id):
-        return self.fs[id]
+        username, course_id = self.enrollment.enrollment_info.get(id)
+        return self.fs[username]
 
 if __name__ == "__main__":
-    wholesitefeature = WholeSiteFeature()
-    wholesitefeature.build()
-    wholesitefeature.load()
+    whole_website_feature = WholeWebsiteFeature()
+    whole_website_feature.build()
+    whole_website_feature.load()
     #print wholesitefeature.get_features("1")

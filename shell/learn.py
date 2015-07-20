@@ -26,6 +26,7 @@ def read(filename):
         if len(X) > 10000:
             break
         """
+    print len(X[0])
     return X,Y,ids
 
 X_train, y_train, ids_train = read(sys.argv[1])

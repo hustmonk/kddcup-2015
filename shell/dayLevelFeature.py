@@ -8,28 +8,20 @@
 __revision__ = '0.1'
 
 
-from highuser import *
 from module import *
 from transfer import *
 
-class DayLevelInfo:
-    daylevelFeatureFilename = '_feature/day.level.info.model'
+class DayLevelFeature:
+    feature_filename = '_feature/day.level.feature.model'
     def build(self):
         print "start build DayLevelInfo..."
-        coursetimeinfo = CourseStatiticTimeInfo()
         log = LogInfo("../data/merge/log.csv")
         enrollment = Enrollment("../data/merge/enrollment.csv")
         obj = Obj()
-        label = Label()
-        userinfo = Userinfo()
-        userinfo.load()
-        module = Module()
-        module.load()
-        transfer_day = Transfer()
-        transfer_day.load()
 
         ccc = 0
         fs = {}
+        feature_num = 0
         for id in enrollment.ids:
             ccc += 1
             if ccc % 5000 == 0:
@@ -37,18 +29,11 @@ class DayLevelInfo:
             infos = log.enrollment_loginfo.get(id, [])
             username, course_id = enrollment.enrollment_info.get(id)
 
-            #time,source,event,o
-            #source: browser,server
-            #event:access,discussion,nagivate,page_close,problem,video,wiki
-            #category:video,vertical,static_tab,sequential,problem,peergrading,outlink,html,discussion,dictation,course_info,course,combinedopenended,chapter,about
-            #time:2014-06-13T09:52:49
-
             info_by_day = {}
             for info in infos:
                 if info[0].find("T") < 0:
                     continue
                 day,timehms = info[0].split("T")
-                #weight = module.get_weight(info[3])
                 weight = 1
                 if day not in info_by_day:
                     info_by_day[day] = {}
@@ -84,29 +69,27 @@ class DayLevelInfo:
                 day_hour_count[info["hour"]] = day_hour_count[info["hour"]] + 1
                 day_cidx_count[info["cidx"]] = day_cidx_count[info["cidx"]] + 1
 
-            f = [0] * (2 + EVENT_VEC_NUM + WEEKDAY_VEC_NUM + HOUR_VEC_NUM + CIDX_VEC_NUM)
-            f[0] = transfer(_browser)
-            f[1] = transfer(_server)
-            fv_no_transfer = [day_event_count,day_weekday_count,day_hour_count,day_cidx_count]
-            start = 2
-            for vs in fv_no_transfer:
-                for (i, v) in enumerate(vs):
-                    f[start+i] = transfer(v)
-                start = start + len(vs)
-            fs[id] = ",".join(["%.2f" % k for k in f ])
+            just_num_vec = [_browser, _server]
+            fv = [day_event_count, day_weekday_count, day_hour_count, day_cidx_count, just_num_vec]
 
-        print start
-        writepickle(DayLevelInfo.daylevelFeatureFilename, fs)
-        print "build DayLevelInfo over!"
+            f = []
+            feature_num = 0
+            for arr in fv:
+                feature_num += len(arr)
+                arr = ["%s" % transfer(k) for k in arr]
+                f.append(",".join(arr))
+            fs[id] = ",".join(f)
+        writepickle(DayLevelFeature.feature_filename, fs)
+        print "build DayLevelInfo over!", feature_num
 
     def load(self):
-        self.fs = loadpickle(DayLevelInfo.daylevelFeatureFilename)
+        self.fs = loadpickle(DayLevelFeature.feature_filename)
 
     def get_features(self, id):
         return self.fs[id]
 
 if __name__ == "__main__":
-    daylevel = DayLevelInfo()
+    daylevel = DayLevelFeature()
     daylevel.build()
     daylevel.load()
     #print daylevel.get_features("1")

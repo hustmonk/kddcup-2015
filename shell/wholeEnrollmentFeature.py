@@ -8,15 +8,16 @@
 __revision__ = '0.1'
 
 
-from commonfeature import *
+from logInfoFeatureExtractor import *
 
-class AllDayFeature:
+class WholeEnrollmentFeature:
+    featurefilename = '_feature/whole.enrollment.feature.model'
     def build(self):
         print "start build AllDayFeature..."
         enrollment = Enrollment("../data/merge/enrollment.csv")
         label = Label()
         log = LogInfo("../data/merge/log.csv")
-        commonfeature = CommonFeature()
+        log_info_feature_extractor = LogInfoFeatureExtractor()
         ccc = 0
         fs = {}
 
@@ -26,22 +27,19 @@ class AllDayFeature:
                 print ccc
             infos = log.enrollment_loginfo.get(id, [])
             username, course_id = enrollment.enrollment_info.get(id)
-            f = commonfeature.get_features(infos, course_id)
+            f = log_info_feature_extractor.get_features(infos, course_id)
             fs[id] = f
-        modelFileSave = open('_feature/allday.info.model', 'wb')
-        pickle.dump(fs, modelFileSave)
-        modelFileSave.close()
+        writepickle(WholeEnrollmentFeature.featurefilename, fs)
         print "build AllDayFeature over!"
 
     def load(self):
-        modelFileLoad = open('_feature/allday.info.model', 'rb')
-        self.fs = pickle.load(modelFileLoad)
+        self.fs = loadpickle(WholeEnrollmentFeature.featurefilename)
 
     def get_features(self, id):
         return self.fs[id]
 
 if __name__ == "__main__":
-    daylevel = AllDayFeature()
-    daylevel.build()
-    daylevel.load()
-    #print daylevel.get_features("117502")
+    whole_enrollment_feature = WholeEnrollmentFeature()
+    whole_enrollment_feature.build()
+    whole_enrollment_feature.load()
+    #print whole_enrollment_feature.get_features("117502")

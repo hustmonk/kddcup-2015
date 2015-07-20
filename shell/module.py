@@ -13,16 +13,17 @@ from enrollment import *
 from Object import *
 from label import *
 from timeutil import *
-from courseStatisticTime import *
+from courseStatisticTimeInfo import *
 from common import *
 import math
 import cPickle as pickle
 class Module:
+    conf_filename = "conf/modular.info.model"
     def build(self):
         print "start build Module..."
 
         label = Label()
-        coursetimeinfo = CourseStatiticTimeInfo()
+        coursetimeinfo = CourseStatisticTimeInfo()
         coursetimeinfo.load()
         #log = Log("../data/merge/log.csv")
         #enrollment = Enrollment("../data/merge/enrollment.csv")
@@ -54,26 +55,16 @@ class Module:
         stat["course_stat"] = course_stat
         stat["course_label"] = course_label
         stat["course_count"] = course_count
-        modelFileSave = open('conf/modular.info.model', 'wb')
-        pickle.dump(stat, modelFileSave)
-        modelFileSave.close()
+        writepickle(Module.conf_filename, stat)
         print "build Module over!"
 
     def load(self):
-        modelFileLoad = open('conf/modular.info.model', 'rb')
-        self.moduler_stat = pickle.load(modelFileLoad)
+
+        self.moduler_stat = loadpickle(Module.conf_filename)
         self.obj = Obj()
         self.course_stat = self.moduler_stat["course_stat"]
         self.course_label = self.moduler_stat["course_label"]
         self.course_count = self.moduler_stat["course_count"]
-        """
-        for (k) in course_stat:
-            print "%s\t%d\t%d\t%d\t%.3f\t%.3f" % (k,course_stat[k],course_label[k],course_count[k],course_label[k]/float(course_count[k]), course_stat[k]/float(course_count[k]))
-        """
-        """
-        for (k, v) in self.moduler_stat.items():
-            print k,v,self.get_weight(k)
-        """
     
     def get_weight(self, o, course_id):
         default_id = "SpATywNh6bZuzm8s1ceuBUnMUAeoAHHw"

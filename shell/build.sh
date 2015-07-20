@@ -3,19 +3,23 @@
 # Last modified: 
 
 set -e
-python courseStatisticTime.py
-python highuser.py
-
-python module.py
-python lastday.py
+#build info
 python objweight.py
+python courseStatisticTimeInfo.py
+python lastdayInfo.py
+python courseTimeSequenceInfo.py
+python statisticInfo.py
 python transfer.py
-python statistic.py
-python moreinfo.py
+python userStatisticInfo.py
+python userPredictInfo.py
 
-python lastdayfeature.py
-python alldayfeature.py
-python day_level_feafure.py
-python wholesitefeature.py
-
+#build single feature
+python baseEnrollmentFeature.py
+python lastdayFeature.py
+python wholeEnrollmentFeature.py
+python baseTimeFeature.py
+python userPredictFeature.py
+python wholeWebsiteFeature.py
+python dayLevelFeature.py
+python statisticFeature.py
 sh run.sh

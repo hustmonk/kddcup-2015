@@ -39,6 +39,15 @@ class TimeUtil:
         timeArray = time.localtime(k)
         otherStyleTime = time.strftime("%Y-%m-%d", timeArray)
         return otherStyleTime
+    @staticmethod
+    def getnextdays(day, n):
+        buf = []
+        if n < 1:
+            return buf
+        for i in range(1, n+1):
+            k = TimeUtil.getnextday(day, i)
+            buf.append(k)
+        return buf
 
 if __name__ == "__main__":
     week = TimeUtil()

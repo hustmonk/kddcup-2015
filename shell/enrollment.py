@@ -18,6 +18,8 @@ class Enrollment:
         for line in fin:
             #enrollment_id,username,course_id
             enrollment_id,username,course_id = line.strip().split(",")
+            if enrollment_id == "enrollment_id":
+                continue
             self.ids.append(enrollment_id)
             self.enrollment_info[enrollment_id] = [username, course_id]
             if username not in self.user_info:

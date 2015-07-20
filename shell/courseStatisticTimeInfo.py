@@ -10,7 +10,7 @@ from timeutil import *
 from common import *
 from enrollment import *
 
-class CourseStatiticTimeInfo:
+class CourseStatisticTimeInfo:
     courseStatiticTimeFilename = "conf/course.time.info"
 
     def build(self):
@@ -40,10 +40,10 @@ class CourseStatiticTimeInfo:
                 buf.append(v[i * len(v) / CIDX_VEC_NUM])
                 course_timeinfo[k] = buf
 
-        writepickle(CourseStatiticTimeInfo.courseStatiticTimeFilename, course_timeinfo)
+        writepickle(CourseStatisticTimeInfo.courseStatiticTimeFilename, course_timeinfo)
 
     def load(self):
-        self.timeinfo = loadpickle(CourseStatiticTimeInfo.courseStatiticTimeFilename)
+        self.timeinfo = loadpickle(CourseStatisticTimeInfo.courseStatiticTimeFilename)
 
         self.course_id = {}
         self.course_time = {}
@@ -65,6 +65,6 @@ class CourseStatiticTimeInfo:
         return self.course_time[id]
 
 if __name__ == "__main__":
-    ct = CourseStatiticTimeInfo()
+    ct = CourseStatisticTimeInfo()
     ct.build()
     ct.load()

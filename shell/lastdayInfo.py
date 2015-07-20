@@ -13,9 +13,9 @@ from enrollment import *
 from common import *
 
 class LastDayInfo:
-    lastdayLogFilename = '_feature/last.day.log'
-    enrollmentIdDaysFilename = "_feature/enrollment.id_days.info"
-    dayindexFilename = "conf/day.index.info"
+    lastday_log_filename = 'conf/last.day.log'
+    enrollment_days_filename = "conf/enrollment.days.info"
+    dayindex_filename = "conf/day.index.info"
 
     def build(self):
         print "start LastDayInfo build..."
@@ -51,25 +51,31 @@ class LastDayInfo:
                 print days[-1],_lastTime
             id_days_infos[id] = [days,_lastTime]
 
-        writepickle(LastDayInfo.lastdayLogFilename, last_infos)
-        writepickle(LastDayInfo.enrollmentIdDaysFilename, id_days_infos)
-        writepickle(LastDayInfo.dayindexFilename, dayDict)
+        writepickle(LastDayInfo.lastday_log_filename, last_infos)
+        writepickle(LastDayInfo.enrollment_days_filename, id_days_infos)
+        writepickle(LastDayInfo.dayindex_filename, dayDict)
 
         print "LastDayInfo build over"
 
     def load(self):
-        self.last_infos = loadpickle(LastDayInfo.lastdayLogFilename)
+        self.last_infos = loadpickle(LastDayInfo.lastday_log_filename)
         self.load_id_days()
 
     def load_id_days(self):
-        self.id_days_infos = loadpickle(LastDayInfo.enrollmentIdDaysFilename)
-        self.dayDict = loadpickle(LastDayInfo.dayindexFilename)
+        self.id_days_infos = loadpickle(LastDayInfo.enrollment_days_filename)
+        self.dayDict = loadpickle(LastDayInfo.dayindex_filename)
 
     def get_info(self, id):
         return [k.split(",") for k in self.last_infos[id]]
 
     def get_days(self, id):
         return self.id_days_infos[id][0]
+
+    def get_last_day(self, id):
+        days = self.get_days(id)
+        if len(days) == 0:
+            return ""
+        return days[-1]
 
     def get_lasthour(self, id):
         hour = self.id_days_infos[id][1]

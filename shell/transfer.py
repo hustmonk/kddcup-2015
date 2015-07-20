@@ -8,12 +8,12 @@
 __revision__ = '0.1'
 from timeutil import *
 from common import *
-from lastday import *
+from lastdayInfo import *
 import cPickle as pickle
 import math
 
 class Transfer():
-    transferFilename = 'conf/transfer.model'
+    conf_filename = 'conf/transfer.model'
     def build(self):
         week = TimeUtil()
         total = {}
@@ -38,10 +38,10 @@ class Transfer():
             s = sum(info)
             info = [float(i)/s for i in info]
             ratio[d] = info
-        writepickle(Transfer.transferFilename, ratio)
+        writepickle(Transfer.conf_filename, ratio)
 
     def load(self):
-        self.ratio = loadpickle(Transfer.transferFilename)
+        self.ratio = loadpickle(Transfer.conf_filename)
         self.default = [0.2/TRANSFER_VEC_NUM]*TRANSFER_VEC_NUM
         self.default[TRANSFER_VEC_NUM-1] = 1 - 0.2/TRANSFER_VEC_NUM * (TRANSFER_VEC_NUM-1)
 

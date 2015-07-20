@@ -13,14 +13,11 @@ from enrollment import *
 from Object import *
 from label import *
 from timeutil import *
-from courseStatisticTime import *
+from courseStatisticTimeInfo import *
 from common import *
-from highuser import *
 import math
 from module import *
 from transfer import *
-from lastday import *
-from commonfeature import *
 class ObjWeight:
     objweightFilename='conf/objweight.info.model'
     def build(self):
@@ -69,7 +66,6 @@ class ObjWeight:
             fs[obj] = [weight + old[0], y * weight + old[1]]
 
     def load(self):
-
         k = loadpickle(ObjWeight.objweightFilename)
         self.fs = k["fs"]
         self.fs_unique = k["fs_unique"]
