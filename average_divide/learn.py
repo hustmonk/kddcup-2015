@@ -21,7 +21,7 @@ def read(filename):
         y = int(arr[0])
         ids.append(arr[1])
 
-        x = [ math.sqrt(float(k)) for k in arr[3:]]
+        x = [float(k) for k in arr[3:]]
         X.append(x)
         Y.append(y)
         """

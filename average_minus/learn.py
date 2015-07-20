@@ -8,10 +8,7 @@
 __revision__ = '0.1'
 import math
 import sys
-#from model import *
 from xgboost_class import *
-#from randomforest import *
-#from net6 import *
 def read(filename):
     X = []
     Y = []
@@ -21,13 +18,9 @@ def read(filename):
         y = int(arr[0])
         ids.append(arr[1])
 
-        x = [ math.sqrt(float(k)) for k in arr[3:]]
+        x = [float(k) for k in arr[3:]]
         X.append(x)
         Y.append(y)
-        """
-        if len(X) > 2000:
-            break
-        """
     return X,Y,ids
 
 X_train, y_train, ids_train = read(sys.argv[1])
