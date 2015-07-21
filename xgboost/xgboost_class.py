@@ -59,7 +59,7 @@ class Model():
                     'eta':0.03+self.getrand()*0.001, 'silent':1, 'objective':'binary:logistic',
                     "lambda":4+self.getrand()*0.1,"gamma":14+self.getrand()*0.2,
                     "colsample_bytree":0.4+self.getrand()*0.01,"seed":seed,
-                    'nthread':4,'eval_metric':'auc',"scale_pos_weight":0.85}
+                    'nthread':4,'eval_metric':'auc'}
         plst = param.items()
         print plst
         sys.stdout.flush()

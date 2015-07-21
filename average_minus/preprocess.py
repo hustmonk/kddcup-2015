@@ -36,6 +36,9 @@ def fit(courses, X):
                 kmax[course][i] = 0
             else:
                 kmax[course][i] = sumx[i] / countx[i]
+            if course == "ZZ":
+                print i,kmax[course][i]
+    exit(-1)
     for i in range(1800):
         isTrans = False
         cc = 0
@@ -61,7 +64,7 @@ def transfer(course, x):
         if i not in filter_dict:
             x1.append((x[i] - kmax[course][i]))
         x1.append(x[i])
-    return x1
+    return i,x1
 def read(filename, isFit):
     X = []
     Y = []
@@ -82,7 +85,7 @@ def read(filename, isFit):
         x = transfer(courses[i], X[i])
         fout.write("%d,%s,%s,%s\n" % (Y[i],ids[i],courses[i],",".join(["%.2f" % k  for k in x]) ))
     fout.close()
-read("train.txt", 1)
+read("train2.txt", 1)
 read("train2.txt", 0)
 read("train1.txt", 0)
 read("test.txt", 0)

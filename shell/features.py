@@ -23,6 +23,7 @@ featrue_filename = sys.argv[3]
 
 feature_class_vec = [LastDayFeature(), DayLevelFeature(), WholeWebsiteFeature(), WholeEnrollmentFeature(),
                  StatisticFeature(), UserPredictFeature(), BaseTimeFeature(), BaseEnrollmentFeature()]
+feature_class_vec_debug = ["LastDayFeature()", "DayLevelFeature()", "WholeWebsiteFeature()", "WholeEnrollmentFeature()", "StatisticFeature()", "UserPredictFeature()", "BaseTimeFeature()", "BaseEnrollmentFeature()"]
 
 for feature_class in feature_class_vec:
     feature_class.load()
@@ -32,15 +33,22 @@ label = Label()
 import math
 def transfer(v):
     return math.log(v+1)
-
+DEBUG = False
 def get_features(id,IS_DEBUG=False):
     y = label.get(id)
     username, course_id = enrollment.enrollment_info.get(id)
 
     f = []
-    for feature_class in feature_class_vec:
+    start = 0
+    for (i, feature_class) in enumerate(feature_class_vec):
         #print type(feature_class.get_features(id))
-        f.append(feature_class.get_features(id))
+        x = feature_class.get_features(id)
+        f.append(x)
+        if DEBUG:
+            print i,start,len(x.split(",")),feature_class_vec_debug
+        start += len(x.split(","))
+    if DEBUG:
+        exit(-1)
 
     f = ",".join(f)
     fs = "%s,%s,%s,%s\n"  % (y, id, course_id, f)

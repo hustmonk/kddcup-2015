@@ -114,7 +114,7 @@ class StatisticInfo:
         self.ratio_day_by_course_id = statistic["ratio_day_by_course_id"]
         self.first_day_by_course_id = statistic["first_day_by_course_id"]
 
-    def get_features(self, day, course_id, days, alldays, non_unique_days):
+    def get_features(self, day, course_id, days, alldays, non_unique_days, nodrop_predict_days, nodrop_lasttoend_days):
         f = [0] * 435
         other_f = [0] * 30
         f[0] = self.ratio_course_id[course_id]
@@ -127,6 +127,7 @@ class StatisticInfo:
                 nd = TimeUtil.getnextday(day, k)
                 f[2+i] = self.ratio_day.get(nd, self.default)
         start = 23
+        #print self.first_day_by_course_id[course_id]
         if len(day) > 4:
             idx = TimeUtil.diff(day, self.first_day_by_course_id[course_id])
             f[start + idx] = 1
@@ -138,7 +139,7 @@ class StatisticInfo:
             if idx >= 0 and idx < 30:
                 f[start + idx] = 1
             if idx < 0:
-                print d,self.first_day_by_course_id[course_id]
+                #print d,self.first_day_by_course_id[course_id]
                 f[start + 30] = f[start + 30] + 1
         """
         start = start + 30
@@ -177,6 +178,17 @@ class StatisticInfo:
                 f[start + 119] = f[start + 119] + 1
         f[start+120] = XX
         start = start + 121
+
+        for d in non_unique_days + nodrop_predict_days + nodrop_lasttoend_days:
+            idx = TimeUtil.diff(d, self.first_day_by_course_id[course_id])
+            if idx >= 18 and idx < 48:
+                idx = idx - 18
+                weight = 1
+                f[start + idx] = weight + f[start + idx]
+                f[start + 30 + idx/3] = f[start + 30 + idx/3] + weight
+                f[start + 40 + idx/6] = f[start + 40 + idx/6] + weight
+        start = start + 45
+
         #XX
         XX = 0
         for d in alldays:
@@ -220,9 +232,11 @@ class StatisticInfo:
             f[start + idx] = 1
         start = start + 5
         idx = TimeUtil.diff(day, self.first_day_by_course_id[course_id])
+
         if idx >= 0 and idx < 30:
             idx = idx / 10
             f[start + idx] = 1
+            #print start + idx
         """
         start = 83
         for i in range(5):
@@ -237,6 +251,7 @@ class StatisticInfo:
             other_f[i+30] = other_f[i+30-1] + other_f[i]
         """
         return ",".join(["%.2f" % k for k in f]) + "," + (",".join(["%.2f" % k for k in other_f]))
+
     def get_start_idx(self, day, course_id):
         if len(day) < 4:
             return 0
@@ -245,6 +260,6 @@ if __name__ == "__main__":
     statistic = StatisticInfo()
     statistic.build()
     statistic.load()
-    #print statistic.get_features("2014-06-17", "V4tXq15GxHo2gaMpaJLZ3IGEkP949IbE")
+    print statistic.get_features("2014-06-17", "V4tXq15GxHo2gaMpaJLZ3IGEkP949IbE", ["2014-05-29","2014-06-17"], ["2014-05-29","2014-06-17"], ["2014-05-29","2014-06-17"], [], [])
 
 

@@ -10,6 +10,7 @@ from enrollment import *
 from lastdayInfo import *
 from statisticInfo import *
 from userStatisticInfo import *
+from userPredictInfo import *
 class StatisticFeature:
     statisticFeatureFilename = "_feature/statistic.info.model"
 
@@ -22,6 +23,8 @@ class StatisticFeature:
         statistic.load()
         user_statistic_info = UserStatisticInfo()
         user_statistic_info.load()
+        user_predict_info = UserPredictInfo()
+        user_predict_info.load()
         for id in enrollment.ids:
             days = lastdayinfo.get_days(id)
             if len(days) == 0:
@@ -32,7 +35,11 @@ class StatisticFeature:
             non_unique_days = user_statistic_info.get_non_unique_days(username)
             unique_days = user_statistic_info.get_unique_days(username)
 
-            f = statistic.get_features(lastday, course_id, days, unique_days, non_unique_days)
+            user_enrollment_predict = user_predict_info.get_user_enrollment_predict(id)
+            nodrop_predict_days = user_enrollment_predict["nodrop_predict_days"]
+            nodrop_lasttoend_days = user_enrollment_predict["nodrop_lasttoend_days"]
+           
+            f = statistic.get_features(lastday, course_id, days, unique_days, non_unique_days, nodrop_predict_days, nodrop_lasttoend_days)
             fs[id] = f
         writepickle(StatisticFeature.statisticFeatureFilename, fs)
 

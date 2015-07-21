@@ -32,24 +32,22 @@ class BaseEnrollmentFeature:
 
             whole_site_before_course_ids_vec = [0] * COURSE_VEC_NUM
             whole_site_after_course_ids_vec = [0] * COURSE_VEC_NUM
+            whole_site_course_ids_vec = [0] * COURSE_VEC_NUM
 
             before_course_num, after_course_num = course_time_sequence_info.get_course_num_before_after(username,id)
             before_course_ids, after_course_ids = course_time_sequence_info.get_course_ids_before_after(username,id)
             for k in before_course_ids:
                 _username, k = enrollment.enrollment_info.get(k)
                 whole_site_before_course_ids_vec[course_statistic_time.get_course_id(k)] = 1
+                whole_site_course_ids_vec[course_statistic_time.get_course_id(k)] = 1
             for k in after_course_ids:
                 _username, k = enrollment.enrollment_info.get(k)
                 whole_site_after_course_ids_vec[course_statistic_time.get_course_id(k)] = 1
+                whole_site_course_ids_vec[course_statistic_time.get_course_id(k)] = 1
             whole_site_before_course_num_vec = get_vector(before_course_num, MAX_ENROLLMENT_VEC_NUM)
             whole_site_after_course_num_vec = get_vector(after_course_num, MAX_ENROLLMENT_VEC_NUM)
 
-            enr_ids = enrollment.user_enrollment_id.get(username, [])
-
-            whole_site_course_ids_vec = [0] * COURSE_VEC_NUM
-            for k in enr_ids:
-                whole_site_course_ids_vec[course_statistic_time.get_course_id(k)] = 1
-            enrollment_num = len(enr_ids)
+            enrollment_num = before_course_num + after_course_num
             enrollment_num_vec = get_vector(enrollment_num, MAX_ENROLLMENT_VEC_NUM)
 
             user_num = len(enrollment.course_info.get(course_id, []))
