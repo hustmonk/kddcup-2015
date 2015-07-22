@@ -47,8 +47,7 @@ class LastDayInfo:
                 _lastTime = info[0]
             last_infos[id] = buf
             days = sorted(days)
-            if len(days) > 0:
-                print days[-1],_lastTime
+
             id_days_infos[id] = [days,_lastTime]
 
         writepickle(LastDayInfo.lastday_log_filename, last_infos)

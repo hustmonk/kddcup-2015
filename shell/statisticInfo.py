@@ -18,8 +18,8 @@ class StatisticInfo:
     statisticInfoFilename = "conf/statistic.info"
     def build(self):
         enrollment = Enrollment("../data/merge/enrollment.csv")
-        userinfo = LastDayInfo()
-        userinfo.load_id_days()
+        lastdayinfo = LastDayInfo()
+        lastdayinfo.load_id_days()
         label = Label()
         count = {}
         dropcount = {}
@@ -31,7 +31,8 @@ class StatisticInfo:
         dropcount_by_course = {}
         cc = 0
         dropcc = 0
-        for (id, days) in userinfo.id_days_infos.items():
+        for (id, info) in lastdayinfo.id_days_infos.items():
+            days = info[0]
             if label.contain(id) and len(days) > 0:
                 lastday = days[-1]
                 y = int(label.get(id))
@@ -83,9 +84,9 @@ class StatisticInfo:
                 d1 = dropcount_by_course[course_id][day]# + default_course_id_ratio * 5
                 _ratio[day] = float(d1)/float(c1)
                 r1 = test_count_by_course[course_id][day]/float(test_count_by_course[course_id]["x"])
-                print day,c1,d1,d1/float(c1),c1/float(c),test_count_by_course[course_id][day],r1, (c1/float(c))/r1
+                #print day,c1,d1,d1/float(c1),c1/float(c),test_count_by_course[course_id][day],r1, (c1/float(c))/r1,"ERROR"
             ratio_day_by_course_id[course_id] = _ratio
-            print ""
+            #print ""
         ratio_day = {}
         for day in count:
             c = count[day] + 10
@@ -104,6 +105,7 @@ class StatisticInfo:
         statistic["default"] = default
         statistic["ratio_day_by_course_id"] = ratio_day_by_course_id
         writepickle(StatisticInfo.statisticInfoFilename, statistic)
+        print "build StatisticInfo over!"
 
     def load(self):
         statistic = loadpickle(StatisticInfo.statisticInfoFilename)
@@ -115,7 +117,7 @@ class StatisticInfo:
         self.first_day_by_course_id = statistic["first_day_by_course_id"]
 
     def get_features(self, day, course_id, days, alldays, non_unique_days, nodrop_predict_days, nodrop_lasttoend_days):
-        f = [0] * 435
+        f = [0] * 467
         other_f = [0] * 30
         f[0] = self.ratio_course_id[course_id]
         f[1] = self.ratio_course_id_first[course_id]
@@ -131,35 +133,30 @@ class StatisticInfo:
         if len(day) > 4:
             idx = TimeUtil.diff(day, self.first_day_by_course_id[course_id])
             f[start + idx] = 1
+            if idx < 29:
+                f[start + 30 + idx + 1] = 1 + f[start + 30 + idx + 1]
+            f[start + 30 + idx] = 1 + f[start + 30 + idx]
+            f[start + 60 + idx / 3] = 1 + f[start + 60 + idx / 3]
+            f[start + 70 + idx / 6] = 1 + f[start + 70 + idx / 6]
+            f[start + 75 + idx / 10] = 1 + f[start + 75 + idx / 10]
         else:
             return ",".join(["%.2f" % k for k in f]) + "," + (",".join(["%.2f" % k for k in other_f]))
-        start = start + 30
+        start = start + 78
         for d in days:
             idx = TimeUtil.diff(d, self.first_day_by_course_id[course_id])
             if idx >= 0 and idx < 30:
                 f[start + idx] = 1
+                if idx < 29:
+                    f[start + 30 + idx + 1] = 1 + f[start + 30 + idx + 1]
+                f[start + 30 + idx] = 1 + f[start + 30 + idx]
+                f[start + 60 + idx / 3] = 1 + f[start + 60 + idx / 3]
+                f[start + 70 + idx / 6] = 1 + f[start + 70 + idx / 6]
+                f[start + 75 + idx / 10] = 1 + f[start + 75 + idx / 10]
             if idx < 0:
                 #print d,self.first_day_by_course_id[course_id]
-                f[start + 30] = f[start + 30] + 1
-        """
-        start = start + 30
-        for d in days:
-            idx = week.diff(d, self.first_day_by_course_id[course_id])
-            if idx >= 0 and idx < 30:
-                f[start + idx] = 1
-                f[start + idx + 1] = 1
-        """
+                f[start + 78] = f[start + 78] + 1
 
-        start = start + 31
-        for i in range(1, 30):
-            f[start + i] = f[start + i - 1] + f[start - i]
-        start = start + 30
-        for d in days:
-            idx = TimeUtil.diff(d, self.first_day_by_course_id[course_id])
-            if idx >= 0 and idx < 30:
-                idx = idx / 3
-                f[start + idx] = 1 + f[start + idx]
-        start = start + 10
+        start = start + 79
         XX = 0
         for d in non_unique_days:
             idx = TimeUtil.diff(d, self.first_day_by_course_id[course_id])
@@ -206,50 +203,9 @@ class StatisticInfo:
             elif idx >= 60:
                 f[start + 119] = f[start + 119] + 1
         f[start+120] = XX
-        """
-        print y,f[start+18:start+78],"YY"
-        print y,f[start+30:start+40],"YY"
-        if XX:
-            print y,"ZZ"
-        """
         start = start + 121
+        #print start
 
-        idx = TimeUtil.diff(day, self.first_day_by_course_id[course_id])
-        if idx >= 0 and idx < 30:
-            idx = idx / 3
-            f[start + idx] = 1
-        start = start + 10
-        for d in days:
-            idx = TimeUtil.diff(d, self.first_day_by_course_id[course_id])
-            if idx >= 0 and idx < 30:
-                idx = idx / 6
-                f[start + idx] = 1 + f[start + idx]
-        start = start + 5
-
-        idx = TimeUtil.diff(day, self.first_day_by_course_id[course_id])
-        if idx >= 0 and idx < 30:
-            idx = idx / 6
-            f[start + idx] = 1
-        start = start + 5
-        idx = TimeUtil.diff(day, self.first_day_by_course_id[course_id])
-
-        if idx >= 0 and idx < 30:
-            idx = idx / 10
-            f[start + idx] = 1
-            #print start + idx
-        """
-        start = 83
-        for i in range(5):
-            default = self.ratio_course_id[course_id]
-            if len(day) < 4:
-                f[start+i] = default
-            else:
-                k = i - 2
-                nd = week.getnd(day, k)
-                f[start+i] = self.ratio_day_by_course_id[course_id].get(nd, default)
-        for i in range(1,30):
-            other_f[i+30] = other_f[i+30-1] + other_f[i]
-        """
         return ",".join(["%.2f" % k for k in f]) + "," + (",".join(["%.2f" % k for k in other_f]))
 
     def get_start_idx(self, day, course_id):

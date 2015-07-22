@@ -15,6 +15,7 @@ class StatisticFeature:
     statisticFeatureFilename = "_feature/statistic.info.model"
 
     def build(self):
+        print "start build StatisticFeature..."
         fs = {}
         enrollment = Enrollment("../data/merge/enrollment.csv")
         lastdayinfo = LastDayInfo()
@@ -38,10 +39,11 @@ class StatisticFeature:
             user_enrollment_predict = user_predict_info.get_user_enrollment_predict(id)
             nodrop_predict_days = user_enrollment_predict["nodrop_predict_days"]
             nodrop_lasttoend_days = user_enrollment_predict["nodrop_lasttoend_days"]
-           
+
             f = statistic.get_features(lastday, course_id, days, unique_days, non_unique_days, nodrop_predict_days, nodrop_lasttoend_days)
             fs[id] = f
         writepickle(StatisticFeature.statisticFeatureFilename, fs)
+        print "build StatisticFeature over!"
 
     def load(self):
         self.fs = loadpickle(StatisticFeature.statisticFeatureFilename)

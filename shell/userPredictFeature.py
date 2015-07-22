@@ -14,9 +14,10 @@ from timeutil import *
 from userPredictInfo import *
 import sys
 class UserPredictFeature:
-    user_predict_feature_filename = "_feature/user.predict.feature"
+    feature_filename = "_feature/user.predict.feature"
 
     def build(self):
+        print "start build UserPredictFeature..."
         enrollment = Enrollment("../data/merge/enrollment.csv")
         user_predict_info = UserPredictInfo()
         user_predict_info.load()
@@ -57,10 +58,11 @@ class UserPredictFeature:
             f.append(k4)
             f.append(k5)
             fs[id] = ",".join(f)
-        writepickle(UserPredictFeature.user_predict_feature_filename, fs)
+        writepickle(UserPredictFeature.feature_filename, fs)
+        print "build UserPredictFeature over!"
 
     def load(self):
-        self.fs = loadpickle(UserPredictFeature.user_predict_feature_filename)
+        self.fs = loadpickle(UserPredictFeature.feature_filename)
 
     def get_features(self, id):
         return self.fs[id]

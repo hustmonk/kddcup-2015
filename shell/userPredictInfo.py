@@ -13,8 +13,9 @@ from lastdayInfo import *
 from timeutil import *
 import sys
 class UserPredictInfo:
-    userPredictInfo = "conf/user.predict.info"
+    conf_filename = "conf/user.predict.info"
     def build(self):
+        print "start build UserPredictInfo..."
         enrollment = Enrollment("../data/merge/enrollment.csv")
         enrollment_train = Enrollment("../data/train/enrollment_train.csv")
         label = Label()
@@ -81,10 +82,11 @@ class UserPredictInfo:
             user_enrollment_predict["nodrop_lasttoend_days"] = nodrop_lasttoend_days
             user_enrollment_predict["test_lasttoend_days"] = test_lasttoend_days
             infos[id] = user_enrollment_predict
-        writepickle(UserPredictInfo.userPredictInfo, infos)
+        writepickle(UserPredictInfo.conf_filename, infos)
+        print "build UserPredictInfo over!"
 
     def load(self):
-        self.infos = loadpickle(UserPredictInfo.userPredictInfo)
+        self.infos = loadpickle(UserPredictInfo.conf_filename)
 
     def get_user_enrollment_predict(self, id):
         return self.infos[id]

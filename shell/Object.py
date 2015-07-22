@@ -59,8 +59,8 @@ class Obj:
             count = 0
             for module_id in self.module_info:
                 if module_id not in self.module_depth:
-                    if count == 1:
-                        print module_id
+                    #if count == 1:
+                    #    #print module_id
                     count += 1
                 else:
                     continue

@@ -11,15 +11,14 @@ from common import *
 from enrollment import *
 
 class CourseStatisticTimeInfo:
-    courseStatiticTimeFilename = "conf/course.time.info"
-
+    conf_filename = "conf/course.time.info"
     def build(self):
+        print "start build CourseStatisticTimeInfo..."
         enrollment = Enrollment("../data/merge/enrollment.csv")
         count = {}
 
         for line in open("../data/merge/log.csv"):
             #enrollment_id,username,course_id,time,source,event,object
-
             id,time,source,event,object = line.strip().split(",")
             if time.find("T") < 0:
                 continue
@@ -40,10 +39,11 @@ class CourseStatisticTimeInfo:
                 buf.append(v[i * len(v) / CIDX_VEC_NUM])
                 course_timeinfo[k] = buf
 
-        writepickle(CourseStatisticTimeInfo.courseStatiticTimeFilename, course_timeinfo)
+        writepickle(CourseStatisticTimeInfo.conf_filename, course_timeinfo)
+        print "over build CourseStatisticTimeInfo..."
 
     def load(self):
-        self.timeinfo = loadpickle(CourseStatisticTimeInfo.courseStatiticTimeFilename)
+        self.timeinfo = loadpickle(CourseStatisticTimeInfo.conf_filename)
 
         self.course_id = {}
         self.course_time = {}

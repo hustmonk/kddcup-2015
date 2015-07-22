@@ -15,7 +15,7 @@ category_map = {}
 event_map = {}
 for k in event_key:
     event_map[k] = len(event_map)
-    print k,event_map[k]
+    #print k,event_map[k]
 
 for k in category_key:
     category_map[k] = len(category_map)
@@ -26,6 +26,7 @@ def get_category_idx(k):
     return category_map[k]
 import math
 def transfer(v):
+    return v
     return math.log(v+1)
 
 def get_vector(idx, maxv):

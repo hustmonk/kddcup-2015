@@ -11,9 +11,9 @@ __revision__ = '0.1'
 from logInfoFeatureExtractor import *
 
 class WholeEnrollmentFeature:
-    featurefilename = '_feature/whole.enrollment.feature.model'
+    feature_filename = '_feature/whole.enrollment.feature.model'
     def build(self):
-        print "start build AllDayFeature..."
+        print "start build WholeEnrollmentFeature..."
         enrollment = Enrollment("../data/merge/enrollment.csv")
         label = Label()
         log = LogInfo("../data/merge/log.csv")
@@ -29,11 +29,11 @@ class WholeEnrollmentFeature:
             username, course_id = enrollment.enrollment_info.get(id)
             f = log_info_feature_extractor.get_features(infos, course_id)
             fs[id] = f
-        writepickle(WholeEnrollmentFeature.featurefilename, fs)
-        print "build AllDayFeature over!"
+        writepickle(WholeEnrollmentFeature.feature_filename, fs)
+        print "build WholeEnrollmentFeature over!", len(f.split(","))
 
     def load(self):
-        self.fs = loadpickle(WholeEnrollmentFeature.featurefilename)
+        self.fs = loadpickle(WholeEnrollmentFeature.feature_filename)
 
     def get_features(self, id):
         return self.fs[id]

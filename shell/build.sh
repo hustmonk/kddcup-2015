@@ -26,6 +26,6 @@ python wholeWebsiteFeature.py
 python dayLevelFeature.py
 python statisticFeature.py
 }
-python statisticFeature.py
-python baseEnrollmentFeature.py
+runinfo
+runfeature
 sh run.sh

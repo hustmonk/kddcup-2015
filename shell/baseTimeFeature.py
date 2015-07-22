@@ -17,6 +17,7 @@ class BaseTimeFeature:
     feature_filename = "_feature/base.time.feature.model"
 
     def build(self):
+        print "start build BaseTimeFeature..."
         fs = {}
         enrollment = Enrollment("../data/merge/enrollment.csv")
         lastdayinfo = LastDayInfo()
@@ -100,6 +101,7 @@ class BaseTimeFeature:
             fs[id] = ",".join(["%s" % k for k in f])
 
         writepickle(BaseTimeFeature.feature_filename, fs)
+        print "build BaseTimeFeature over"
 
     def load(self):
         self.fs = loadpickle(BaseTimeFeature.feature_filename)

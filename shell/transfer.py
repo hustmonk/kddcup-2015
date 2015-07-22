@@ -15,6 +15,7 @@ import math
 class Transfer():
     conf_filename = 'conf/transfer.model'
     def build(self):
+        print "start build Transfer..."
         week = TimeUtil()
         total = {}
         lastdayInfo = LastDayInfo()
@@ -39,6 +40,7 @@ class Transfer():
             info = [float(i)/s for i in info]
             ratio[d] = info
         writepickle(Transfer.conf_filename, ratio)
+        print "build Transfer over!"
 
     def load(self):
         self.ratio = loadpickle(Transfer.conf_filename)

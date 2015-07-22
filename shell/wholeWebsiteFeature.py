@@ -11,7 +11,7 @@ __revision__ = '0.1'
 from logInfoFeatureExtractor import *
 
 class WholeWebsiteFeature:
-    whole_website_feature_filename = "_feature/whole.info.model"
+    feature_filename = "_feature/whole.info.model"
     def build(self):
         print "start build WholeWebsiteFeature ..."
         enrollment = Enrollment("../data/merge/enrollment.csv")
@@ -33,12 +33,13 @@ class WholeWebsiteFeature:
                 username, course_id = enrollment.enrollment_info.get(id)
                 course_id_vec[coursetimeinfo.get_course_id(course_id)] = 1
             f = log_info_feature_extractor.get_features_no_courseid(infos)
-            fs[uid] = f + "," + ",".join(["%s" % k for k in course_id_vec])
-        writepickle(WholeWebsiteFeature.whole_website_feature_filename, fs)
-        print "build WholeWebsiteFeature over!"
+            f = f + "," + ",".join(["%s" % k for k in course_id_vec])
+            fs[uid] = f
+        writepickle(WholeWebsiteFeature.feature_filename, fs)
+        print "build WholeWebsiteFeature over!", len(f.split(","))
 
     def load(self):
-        self.fs = loadpickle(WholeWebsiteFeature.whole_website_feature_filename)
+        self.fs = loadpickle(WholeWebsiteFeature.feature_filename)
         self.enrollment = Enrollment("../data/merge/enrollment.csv")
 
     def get_features(self, id):

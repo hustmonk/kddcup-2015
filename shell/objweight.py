@@ -19,7 +19,7 @@ import math
 from module import *
 from transfer import *
 class ObjWeight:
-    objweightFilename='conf/objweight.info.model'
+    conf_filename ='conf/objweight.info.model'
     def build(self):
         print "start build ObjWeight..."
         enrollment = Enrollment("../data/train/enrollment_train.csv")
@@ -54,7 +54,7 @@ class ObjWeight:
         k = {}
         k["fs"] = fs
         k["fs_unique"] = fs_unique
-        writepickle(ObjWeight.objweightFilename, k)
+        writepickle(ObjWeight.conf_filename, k)
 
         print "build ObjWeight over!"
 
@@ -66,7 +66,7 @@ class ObjWeight:
             fs[obj] = [weight + old[0], y * weight + old[1]]
 
     def load(self):
-        k = loadpickle(ObjWeight.objweightFilename)
+        k = loadpickle(ObjWeight.conf_filename)
         self.fs = k["fs"]
         self.fs_unique = k["fs_unique"]
         self.weight_default = self.fs["OBJ"]

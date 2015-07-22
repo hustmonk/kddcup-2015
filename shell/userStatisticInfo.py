@@ -20,7 +20,7 @@ import cPickle as pickle
 class UserStatisticInfo:
     info_filename = "conf/user.statistic.info.model"
     def build(self):
-        print "start build Userinfo..."
+        print "start build UserStatisticInfo..."
         coursetimeinfo = CourseStatisticTimeInfo()
         coursetimeinfo.load()
         log = LogInfo("../data/merge/log.csv")
@@ -64,7 +64,7 @@ class UserStatisticInfo:
                 total[u]["course_order"][info[i][0]] = i
 
         writepickle(UserStatisticInfo.info_filename, total)
-        print "build Userinfo over!"
+        print "build UserStatisticInfo over!"
 
     def load(self):
         self.total = loadpickle(UserStatisticInfo.info_filename)

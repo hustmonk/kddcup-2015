@@ -14,7 +14,7 @@ from transfer import *
 class DayLevelFeature:
     feature_filename = '_feature/day.level.feature.model'
     def build(self):
-        print "start build DayLevelInfo..."
+        print "start build DayLevelFeature..."
         log = LogInfo("../data/merge/log.csv")
         enrollment = Enrollment("../data/merge/enrollment.csv")
         obj = Obj()
@@ -80,7 +80,7 @@ class DayLevelFeature:
                 f.append(",".join(arr))
             fs[id] = ",".join(f)
         writepickle(DayLevelFeature.feature_filename, fs)
-        print "build DayLevelInfo over!", feature_num
+        print "build DayLevelFeature over!", feature_num
 
     def load(self):
         self.fs = loadpickle(DayLevelFeature.feature_filename)
